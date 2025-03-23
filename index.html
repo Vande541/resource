@@ -1,28 +1,161 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Namae Nonai Kaibutsu</title>
+    <title>Kho tài liệu học tập</title>
+    <style>
+        body { 
+            font-family: 'Arial', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f8f9fa; 
+            color: #333; 
+        }
+        .container { 
+            max-width: 900px; 
+            margin: 40px auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+        }
+        h1 { 
+            text-align: center; 
+            color: #007bff; 
+        }
+        .subject { 
+            margin-bottom: 15px; 
+        }
+        .subject h2 { 
+            background: #007bff; 
+            color: white; 
+            padding: 12px; 
+            border-radius: 6px; 
+            margin: 0; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .subject h2:hover {
+            background: #0056b3;
+        }
+        .subject h2 span {
+            transition: transform 0.3s ease;
+        }
+        ul { 
+            list-style: none; 
+            padding: 0; 
+            margin-top: 10px;
+            display: none; 
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity 0.3s ease, max-height 0.3s ease;
+        }
+        ul.active {
+            display: block;
+            opacity: 1;
+            max-height: 500px;
+        }
+        ul li { 
+            padding: 10px; 
+            background: #e9ecef; 
+            margin: 5px 0; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            transition: background 0.3s; 
+        }
+        ul li:hover { 
+            background: #ced4da; 
+        }
+        iframe { 
+            width: 100%; 
+            height: 600px; 
+            border: none; 
+            display: none; 
+            margin-top: 20px; 
+            border-radius: 8px;
+        }
+    </style>
 </head>
 <body>
-    </style>
-    <div class="main-screen">
-        <img src="https://th.bing.com/th/id/OIP.kUw2K8owFfYIwe8mWXZdJAHaKh?rs=1&pid=ImgDetMain" alt="Cover Manga">
-        <div class="chapter-container">
-            <h3>Quái Vật Không Tên</h3>
-            <a class="chapter1" href="./Chap42/index.html">Chap 42 : Cô Gái Ăn "Thịt"</a>
-            <a class="chapter_disable" href="#">Chap 43 - Not Publish</a>
-            <a class="chapter_disable" href="#">Chap 44 - On Going...</a>
-            <a class="chapter_disable" href="#">Chap 45 - (Comming Soon)</a>
-            <a class="chapter_disable" href="#">Chap 46 - (Comming Soon)</a>
-            <a class="chapter_disable" href="#">Chap 47 - (Comming Soon)</a>
-            <a class="chapter_disable" href="#">Chap 48 - (Comming Soon)</a>
-            <a class="chapter_disable" href="#">Chap 49 - (Comming Soon)</a>
-            <a class="chapter_disable" href="#">Chap 50 - END</a>
+    <div class="container">
+        <h1>📚 Kho tài liệu học tập</h1>
+        
+        <div class="subject" onclick="toggleList('math-list', this)">
+            <h2>📘 Toán <span>▼</span></h2>
+            <ul id="math-list"></ul>
         </div>
-            
+        
+        <div class="subject" onclick="toggleList('physics-list', this)">
+            <h2>🔬 Lý <span>▼</span></h2>
+            <ul id="physics-list"></ul>
+        </div>
+        
+        <div class="subject" onclick="toggleList('english-list', this)">
+            <h2>📖 Tiếng Anh <span>▼</span></h2>
+            <ul id="english-list"></ul>
+        </div>
+        
+        <iframe id="pdf-viewer"></iframe>
     </div>
+    
+    <script>
+        const githubBaseUrl = "https://raw.githubusercontent.com/Vande541/resource/main/";
+        const subjects = {
+            math: "Toán",
+            physics: "Lý",
+            english: "Anh"
+        };
+
+        function toggleList(id, element) {
+            const list = document.getElementById(id);
+            const icon = element.querySelector("span");
+            
+            if (list.classList.contains("active")) {
+                list.classList.remove("active");
+                setTimeout(() => list.style.display = "none", 300);
+                icon.style.transform = "rotate(0deg)";
+            } else {
+                list.style.display = "block";
+                setTimeout(() => list.classList.add("active"), 10);
+                icon.style.transform = "rotate(180deg)";
+            }
+        }
+
+        async function fetchFiles(subject, folder) {
+            const url = `https://api.github.com/repos/Vande541/resource/contents/${folder}`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (Array.isArray(data)) {
+                    const list = document.getElementById(`${subject}-list`);
+                    list.innerHTML = '';
+                    data.forEach(file => {
+                        if (file.name.endsWith(".pdf")) {
+                            const li = document.createElement("li");
+                            li.textContent = file.name;
+                            li.onclick = () => showPdf(folder, file.name);
+                            list.appendChild(li);
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error(`Lỗi khi lấy dữ liệu từ GitHub: ${error}`);
+            }
+        }
+
+        function showPdf(folder, filename) {
+            const viewer = document.getElementById("pdf-viewer");
+            const encodedUrl = encodeURIComponent(`${githubBaseUrl}${folder}/${filename}`);
+            viewer.src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodedUrl}`;
+            viewer.style.display = "block";
+        }
+        
+        Object.entries(subjects).forEach(([subject, folder]) => fetchFiles(subject, folder));
+    </script>
 </body>
 </html>
