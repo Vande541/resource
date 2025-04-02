@@ -79,6 +79,14 @@
             margin-top: 20px; 
             border-radius: 8px;
         }
+        /* Thêm style cho ảnh */
+        #image-viewer {
+            width: 100%;
+            max-width: 100%;
+            display: none;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -100,7 +108,9 @@
             <ul id="english-list"></ul>
         </div>
         
+        <!-- Thêm thẻ img để hiển thị ảnh -->
         <iframe id="pdf-viewer"></iframe>
+        <img id="image-viewer" alt="File ảnh">
     </div>
     
     <script>
@@ -135,24 +145,44 @@
                     const list = document.getElementById(`${subject}-list`);
                     list.innerHTML = '';
                     data.forEach(file => {
-                        if (file.name.endsWith(".pdf")) {
+                        // Hỗ trợ cả PDF và ảnh (PNG, JPG, JPEG)
+                        if (file.name.endsWith(".pdf") || file.name.endsWith(".png") || file.name.endsWith(".jpg") || file.name.endsWith(".jpeg")) {
                             const li = document.createElement("li");
                             li.textContent = file.name;
-                            li.onclick = () => showPdf(folder, file.name);
+                            li.onclick = () => showFile(folder, file.name);
                             list.appendChild(li);
                         }
                     });
+                    if (list.innerHTML === '') {
+                        list.innerHTML = '<li>Không tìm thấy tài liệu nào.</li>';
+                    }
                 }
             } catch (error) {
                 console.error(`Lỗi khi lấy dữ liệu từ GitHub: ${error}`);
+                const list = document.getElementById(`${subject}-list`);
+                list.innerHTML = '<li>Lỗi khi tải tài liệu.</li>';
             }
         }
 
-        function showPdf(folder, filename) {
-            const viewer = document.getElementById("pdf-viewer");
-            const encodedUrl = encodeURIComponent(`${githubBaseUrl}${folder}/${filename}`);
-            viewer.src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodedUrl}`;
-            viewer.style.display = "block";
+        function showFile(folder, filename) {
+            const pdfViewer = document.getElementById("pdf-viewer");
+            const imageViewer = document.getElementById("image-viewer");
+
+            // Ẩn cả hai viewer trước khi hiển thị file mới
+            pdfViewer.style.display = "none";
+            imageViewer.style.display = "none";
+
+            // Kiểm tra loại file
+            if (filename.endsWith(".pdf")) {
+                // Hiển thị PDF
+                const encodedUrl = encodeURIComponent(`${githubBaseUrl}${folder}/${filename}`);
+                pdfViewer.src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodedUrl}`;
+                pdfViewer.style.display = "block";
+            } else if (filename.endsWith(".png") || filename.endsWith(".jpg") || filename.endsWith(".jpeg")) {
+                // Hiển thị ảnh
+                imageViewer.src = `${githubBaseUrl}${folder}/${filename}`;
+                imageViewer.style.display = "block";
+            }
         }
         
         Object.entries(subjects).forEach(([subject, folder]) => fetchFiles(subject, folder));
