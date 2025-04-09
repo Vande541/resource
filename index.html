@@ -1,191 +1,269 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kho tài liệu học tập</title>
-    <style>
-        body { 
-            font-family: 'Arial', sans-serif; 
-            margin: 0; 
-            padding: 0; 
-            background-color: #f8f9fa; 
-            color: #333; 
-        }
-        .container { 
-            max-width: 900px; 
-            margin: 40px auto; 
-            background: white; 
-            padding: 20px; 
-            border-radius: 10px; 
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
-        }
-        h1 { 
-            text-align: center; 
-            color: #007bff; 
-        }
-        .subject { 
-            margin-bottom: 15px; 
-        }
-        .subject h2 { 
-            background: #007bff; 
-            color: white; 
-            padding: 12px; 
-            border-radius: 6px; 
-            margin: 0; 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .subject h2:hover {
-            background: #0056b3;
-        }
-        .subject h2 span {
-            transition: transform 0.3s ease;
-        }
-        ul { 
-            list-style: none; 
-            padding: 0; 
-            margin-top: 10px;
-            display: none; 
-            opacity: 0;
-            max-height: 0;
-            overflow: hidden;
-            transition: opacity 0.3s ease, max-height 0.3s ease;
-        }
-        ul.active {
-            display: block;
-            opacity: 1;
-            max-height: 500px;
-        }
-        ul li { 
-            padding: 10px; 
-            background: #e9ecef; 
-            margin: 5px 0; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            transition: background 0.3s; 
-        }
-        ul li:hover { 
-            background: #ced4da; 
-        }
-        iframe { 
-            width: 100%; 
-            height: 600px; 
-            border: none; 
-            display: none; 
-            margin-top: 20px; 
-            border-radius: 8px;
-        }
-        /* Thêm style cho ảnh */
-        #image-viewer {
-            width: 100%;
-            max-width: 100%;
-            display: none;
-            margin-top: 20px;
-            border-radius: 8px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kho tài liệu học tập</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #007bff;
+    }
+
+    .subject {
+      margin-bottom: 20px;
+    }
+
+    .subject h2 {
+      background: #007bff;
+      color: white;
+      padding: 12px;
+      border-radius: 6px;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .subject h2:hover {
+      background: #0056b3;
+    }
+
+    .subject h2 span {
+      transition: transform 0.3s ease;
+    }
+
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+      display: none;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.3s ease, max-height 0.3s ease;
+    }
+
+    .card-container.active {
+      display: grid;
+      opacity: 1;
+      max-height: 2000px;
+    }
+
+    .card {
+      background: #e9ecef;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s ease;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      background: #ced4da;
+    }
+
+    .card h4 {
+      margin: 0;
+      font-size: 16px;
+      word-wrap: break-word;
+    }
+
+    .card small {
+      color: #6c757d;
+    }
+
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      display: none;
+      margin-top: 20px;
+      border-radius: 8px;
+    }
+
+    #image-viewer {
+      width: 100%;
+      max-width: 100%;
+      display: none;
+      margin-top: 20px;
+      border-radius: 8px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #121212;
+        color: #e0e0e0;
+      }
+
+      .container {
+        background-color: #1e1e1e;
+        box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+      }
+
+      h1 {
+        color: #4dabf7;
+      }
+
+      .subject h2 {
+        background: #343a40;
+        color: #ffffff;
+      }
+
+      .subject h2:hover {
+        background: #495057;
+      }
+
+      .card {
+        background: #2b2b2b;
+        color: #e0e0e0;
+      }
+
+      .card:hover {
+        background: #3b3b3b;
+      }
+
+      iframe,
+      #image-viewer {
+        background-color: #1e1e1e;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>📚 Kho tài liệu học tập</h1>
-        
-        <div class="subject" onclick="toggleList('math-list', this)">
-            <h2>📘 Toán <span>▼</span></h2>
-            <ul id="math-list"></ul>
-        </div>
-        
-        <div class="subject" onclick="toggleList('physics-list', this)">
-            <h2>🔬 Lý <span>▼</span></h2>
-            <ul id="physics-list"></ul>
-        </div>
-        
-        <div class="subject" onclick="toggleList('english-list', this)">
-            <h2>📖 Tiếng Anh <span>▼</span></h2>
-            <ul id="english-list"></ul>
-        </div>
-        
-        <!-- Thêm thẻ img để hiển thị ảnh -->
-        <iframe id="pdf-viewer"></iframe>
-        <img id="image-viewer" alt="File ảnh">
+  <div class="container">
+    <h1>📚 Kho tài liệu học tập</h1>
+
+    <div class="subject" onclick="toggleList('math-list', this)">
+      <h2>📘 Toán <span>▼</span></h2>
+      <div class="card-container" id="math-list"></div>
     </div>
-    
-    <script>
-        const githubBaseUrl = "https://raw.githubusercontent.com/Vande541/resource/main/";
-        const subjects = {
-            math: "Toán",
-            physics: "Lý",
-            english: "Anh"
-        };
 
-        function toggleList(id, element) {
-            const list = document.getElementById(id);
-            const icon = element.querySelector("span");
-            
-            if (list.classList.contains("active")) {
-                list.classList.remove("active");
-                setTimeout(() => list.style.display = "none", 300);
-                icon.style.transform = "rotate(0deg)";
-            } else {
-                list.style.display = "block";
-                setTimeout(() => list.classList.add("active"), 10);
-                icon.style.transform = "rotate(180deg)";
-            }
+    <div class="subject" onclick="toggleList('physics-list', this)">
+      <h2>🔬 Lý <span>▼</span></h2>
+      <div class="card-container" id="physics-list"></div>
+    </div>
+
+    <div class="subject" onclick="toggleList('english-list', this)">
+      <h2>📖 Tiếng Anh <span>▼</span></h2>
+      <div class="card-container" id="english-list"></div>
+    </div>
+
+    <iframe id="pdf-viewer"></iframe>
+    <img id="image-viewer" alt="File ảnh">
+  </div>
+
+  <script>
+    const githubBaseUrl = "https://raw.githubusercontent.com/Vande541/resource/main/";
+    const repo = "Vande541/resource";
+    const subjects = {
+      math: "Toán",
+      physics: "Lý",
+      english: "Anh"
+    };
+
+    function toggleList(id, element) {
+      const list = document.getElementById(id);
+      const icon = element.querySelector("span");
+
+      if (list.classList.contains("active")) {
+        list.classList.remove("active");
+        setTimeout(() => list.style.display = "none", 300);
+        icon.style.transform = "rotate(0deg)";
+      } else {
+        list.style.display = "grid";
+        setTimeout(() => list.classList.add("active"), 10);
+        icon.style.transform = "rotate(180deg)";
+      }
+    }
+
+    async function fetchFiles(subject, folder) {
+      const url = `https://api.github.com/repos/${repo}/contents/${folder}`;
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const container = document.getElementById(`${subject}-list`);
+        container.innerHTML = '';
+
+        for (const file of data) {
+          if (file.name.match(/\.(pdf|png|jpe?g)$/i)) {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.onclick = () => showFile(folder, file.name);
+
+            const commitDate = await fetchLastModified(folder + '/' + file.name);
+
+            card.innerHTML = `
+              <h4>${file.name.endsWith('.pdf') ? '📄' : '🖼️'} ${file.name}</h4>
+              <small>Cập nhật: ${commitDate || 'Không rõ'}</small>
+            `;
+            container.appendChild(card);
+          }
         }
 
-        async function fetchFiles(subject, folder) {
-            const url = `https://api.github.com/repos/Vande541/resource/contents/${folder}`;
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                if (Array.isArray(data)) {
-                    const list = document.getElementById(`${subject}-list`);
-                    list.innerHTML = '';
-                    data.forEach(file => {
-                        // Hỗ trợ cả PDF và ảnh (PNG, JPG, JPEG)
-                        if (file.name.endsWith(".pdf") || file.name.endsWith(".png") || file.name.endsWith(".jpg") || file.name.endsWith(".jpeg")) {
-                            const li = document.createElement("li");
-                            li.textContent = file.name;
-                            li.onclick = () => showFile(folder, file.name);
-                            list.appendChild(li);
-                        }
-                    });
-                    if (list.innerHTML === '') {
-                        list.innerHTML = '<li>Không tìm thấy tài liệu nào.</li>';
-                    }
-                }
-            } catch (error) {
-                console.error(`Lỗi khi lấy dữ liệu từ GitHub: ${error}`);
-                const list = document.getElementById(`${subject}-list`);
-                list.innerHTML = '<li>Lỗi khi tải tài liệu.</li>';
-            }
+        if (container.innerHTML.trim() === '') {
+          container.innerHTML = '<p>Không tìm thấy tài liệu nào.</p>';
         }
+      } catch (error) {
+        console.error(`Lỗi khi lấy dữ liệu từ GitHub: ${error}`);
+        document.getElementById(`${subject}-list`).innerHTML = '<p>Lỗi khi tải tài liệu.</p>';
+      }
+    }
 
-        function showFile(folder, filename) {
-            const pdfViewer = document.getElementById("pdf-viewer");
-            const imageViewer = document.getElementById("image-viewer");
-
-            // Ẩn cả hai viewer trước khi hiển thị file mới
-            pdfViewer.style.display = "none";
-            imageViewer.style.display = "none";
-
-            // Kiểm tra loại file
-            if (filename.endsWith(".pdf")) {
-                // Hiển thị PDF
-                const encodedUrl = encodeURIComponent(`${githubBaseUrl}${folder}/${filename}`);
-                pdfViewer.src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodedUrl}`;
-                pdfViewer.style.display = "block";
-            } else if (filename.endsWith(".png") || filename.endsWith(".jpg") || filename.endsWith(".jpeg")) {
-                // Hiển thị ảnh
-                imageViewer.src = `${githubBaseUrl}${folder}/${filename}`;
-                imageViewer.style.display = "block";
-            }
+    async function fetchLastModified(filepath) {
+      const url = `https://api.github.com/repos/${repo}/commits?path=${filepath}&per_page=1`;
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data && data.length > 0) {
+          const date = new Date(data[0].commit.committer.date);
+          return date.toLocaleDateString('vi-VN');
         }
-        
-        Object.entries(subjects).forEach(([subject, folder]) => fetchFiles(subject, folder));
-    </script>
+      } catch (err) {
+        console.error('Lỗi lấy ngày commit:', err);
+      }
+      return null;
+    }
+
+    function showFile(folder, filename) {
+      const pdfViewer = document.getElementById("pdf-viewer");
+      const imageViewer = document.getElementById("image-viewer");
+
+      pdfViewer.style.display = "none";
+      imageViewer.style.display = "none";
+
+      if (filename.endsWith(".pdf")) {
+        const encodedUrl = encodeURIComponent(`${githubBaseUrl}${folder}/${filename}`);
+        pdfViewer.src = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodedUrl}`;
+        pdfViewer.style.display = "block";
+      } else {
+        imageViewer.src = `${githubBaseUrl}${folder}/${filename}`;
+        imageViewer.style.display = "block";
+      }
+    }
+
+    Object.entries(subjects).forEach(([subject, folder]) => fetchFiles(subject, folder));
+  </script>
 </body>
 </html>
